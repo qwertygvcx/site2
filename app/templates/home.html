@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Boards:</h2>
+<ul>
+    {% for b in boards %}
+    <li>
+        <a href="/{{ b.name }}/">/{{ b.name }}/</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,17 @@
+body {
+  background-color: #efefef;
+  margin: 0;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 10pt; }
+
+header {
+  background-color: #efefef;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid gray; }
+  header * {
+    color: #707070; }
+
+/*# sourceMappingURL=light.css.map */

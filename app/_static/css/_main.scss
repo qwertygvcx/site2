@@ -1,0 +1,19 @@
+body {
+    background-color: $color-primary;
+    margin: 0;
+    font-family: $font-family;
+    font-size: 10pt;
+}
+
+header {
+    background-color: $color-primary;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid gray;
+
+    * {
+        color: $text-muted;
+    }
+}
