@@ -30,6 +30,8 @@ def index():
 
     return render_template("home.html", boards=boards)
 
+# import routes
+from app.routes import *
 
 if __name__ == '__main__':
     app.run()
