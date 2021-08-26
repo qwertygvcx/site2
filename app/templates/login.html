@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="fieldset-wrapper">
+  <div class="form-fieldset">
+    <fieldset class="form-fieldset-root">
+      <legend>Log in</legend>
+      <form action="/*/login" method="post">
+
+        <div>
+          <label for="name">username: </label>
+          <input type="text" id="name" name="name" />
+        </div>
+
+        <br />
+
+        <div>
+          <label for="password">password: </label>
+          <input type="password" id="password" name="password" />
+        </div>
+
+        <br />
+
+        <input type="submit" value="log in" style="float: right" />
+
+      </form>
+    </fieldset>
+  </div>
+</div>
+{% endblock %}
