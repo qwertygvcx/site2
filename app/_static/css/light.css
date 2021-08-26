@@ -14,4 +14,19 @@ header {
   header * {
     color: #707070; }
 
+.fieldset-wrapper {
+  margin-top: 7rem;
+  text-align: center; }
+
+.form-fieldset {
+  display: inline-block;
+  padding: 2rem 5rem;
+  background: white;
+  border-radius: 0.25rem; }
+  .form-fieldset .form-fieldset-root {
+    padding: 1rem; }
+    .form-fieldset .form-fieldset-root legend {
+      font-weight: bold;
+      font-size: 1.5rem; }
+
 /*# sourceMappingURL=light.css.map */
