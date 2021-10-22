@@ -1,0 +1,7 @@
+{% extends "index.html" %}
+{% block title %}401 Unauthorized{% endblock %}
+{% block content %}
+<h1>fail!</h1>
+<p>what you're trying to do requires an account.</p>
+<h5><a href="{{ url_for('auth.login_get') }}">sign up or log in</a></h5>
+{% endblock %}

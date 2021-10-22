@@ -9,6 +9,7 @@ from flask import (
 import re, secrets
 from app.classes.user import User
 from app.helpers.wrappers import get_logged_in_user
+from urllib.parse import unquote
 
 auth = Blueprint('auth', __name__)
 
@@ -23,6 +24,7 @@ def auth_before_request():
 
     if v:
         redirect_to = request.args.get('redirect', '/')
+        redirect_to = unquote(redirect_to)
 
         if not redirect_to.startswith('/'):
             redirect_to = '/'
@@ -34,6 +36,7 @@ def auth_before_request():
 def login_get():
 
     redirect_to = request.args.get('redirect', '/')
+    redirect_to = unquote(redirect_to)
 
     if not redirect_to.startswith('/'):
         redirect_to = '/'
