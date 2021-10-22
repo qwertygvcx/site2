@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block title %}Your account data{% endblock %}
+{% block content %}
+<h4>for privacy purposes, sensitive information such as your password hash may be hidden.</h4>
+<table>
+	<tr>
+		<th>key</th>
+		<th>value</th>
+	</tr>
+	{% for k, v in data.items() %}
+	<tr>
+		<td>{{ k }}</td>
+		<td>{{ v }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

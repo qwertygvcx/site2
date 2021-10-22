@@ -4,29 +4,58 @@ body {
   font-family: arial, helvetica, sans-serif;
   font-size: 10pt; }
 
-header {
-  background-color: #efefef;
+a {
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: underline; }
+
+nav {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 0.25rem 0.5rem;
-  border-bottom: 1px solid gray; }
-  header * {
-    color: #707070; }
+  padding: 1rem 1.5rem; }
+  nav * {
+    color: white; }
+  nav #name a {
+    font-weight: 700;
+    font-size: 1.05rem; }
 
-.fieldset-wrapper {
+#content {
+  padding-left: 1rem;
+  padding-right: 1rem; }
+
+.settings-wrapper {
   margin-top: 7rem;
   text-align: center; }
 
-.form-fieldset {
+.form-wrapper {
   display: inline-block;
   padding: 2rem 5rem;
   background: white;
   border-radius: 0.25rem; }
-  .form-fieldset .form-fieldset-root {
+  .form-wrapper .form-fieldset {
     padding: 1rem; }
-    .form-fieldset .form-fieldset-root legend {
+    .form-wrapper .form-fieldset legend {
       font-weight: bold;
       font-size: 1.5rem; }
+
+#logout {
+  display: inline-block; }
+  #logout input[type="submit"] {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: inherit; }
+  #logout input[type="submit"]:hover {
+    text-decoration: underline; }
+
+.form-submit {
+  float: right; }
+
+.error {
+  color: crimson; }
 
 /*# sourceMappingURL=light.css.map */

@@ -1,8 +1,18 @@
-<header>
-    <div id="nav-boardlist">
-        [ default boards go here ]
+<nav style="background-color: {{ 'SITE_COLOR' | app_config  }};">
+    <div id="name">
+        <a href="/">{{ 'SITE_NAME' | app_config }}</a>
     </div>
     <div id="nav-account">
-        [ <a href="/*/login">login</a> / <a href="register">register</a> ]
+        {% if v %}
+        <a href="{{ url_for('user_blueprint.my_info') }}">{{ v.name }}</a> 
+        |
+        <a href="{{ url_for('settings.settings_index') }}">settings</a> 
+        |
+        <form id="logout" action="{{ url_for('logout') }}" method="post">
+            <input type="submit" value="logout" />
+        </form>
+        {% else %}
+        [ <a href="{{ url_for('auth.login_get') }}">login / register</a> ]
+        {% endif %}
     </div>
-</header>
+</nav>

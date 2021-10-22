@@ -1,30 +1,64 @@
 {% extends "index.html" %}
-{% block title %}Log in{% endblock %}
+{% block title %}log in or register{% endblock %}
 {% block content %}
-<div class="fieldset-wrapper">
-  <div class="form-fieldset">
-    <fieldset class="form-fieldset-root">
+<div class="settings-wrapper">
+  {% if error %}
+  <h4 class="error">{{ error }}</h4>
+  {% endif %}
+  <div class="form-wrapper">
+    <fieldset class="form-fieldset">
       <legend>Log in</legend>
-      <form action="/*/login" method="post">
-
+      <form action="{{ url_for('auth.login_post') }}" method="post">
+        <input type="hidden" name="redirect" value="{{ redirect }}" />
         <div>
-          <label for="name">username: </label>
-          <input type="text" id="name" name="name" />
+          <label for="login-name">username: </label>
+          <input type="text" id="login-name" name="name" required="" />
         </div>
-
         <br />
-
         <div>
           <label for="password">password: </label>
-          <input type="password" id="password" name="password" />
+          <input type="password" id="login-password" name="password" required="" />
         </div>
-
         <br />
-
-        <input type="submit" value="log in" style="float: right" />
-
+        <input type="submit" value="log in" class="form-submit" />
+      </form>
+    </fieldset>
+    <fieldset class="form-fieldset">
+      <legend>Register</legend>
+      <form action="{{ url_for('auth.signup') }}" method="post">
+        <input type="hidden" name="redirect" value="{{ redirect }}" />
+        <div>
+          <label for="register-name">username: </label>
+          <input type="text" id="register-name" name="name" required="" />
+        </div>
+        <br />
+        <div>
+          <label for="password">password: </label>
+          <input type="password" id="register-password" name="password" required="" />
+        </div>
+        <a href="javascript:;" onclick="togglepw()">show/hide password</a>
+        <br />
+        <div>
+          <input type="checkbox" id="anon" name="anon" />
+          <label for="anon">post anonymously by default </label>
+        </div>
+        <br />
+        <input type="submit" value="register" class="form-submit" />
       </form>
     </fieldset>
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+  function togglepw() {
+    const pw = document.getElementById('register-password');
+
+    if (pw.getAttribute('type') === 'password') {
+      pw.setAttribute('type', 'text');
+    } else {
+      pw.setAttribute('type', 'password');
+    }
+  }
+</script>
 {% endblock %}
