@@ -83,9 +83,9 @@ def signup():
         if not username or not password:
             raise AuthError("invalid username/password")
 
-        valid_name_regex = re.compile('^[a-zA-Z0-9_]{3,25}$')
+        valid_name_regex = re.compile('^[a-zA-Z0-9_]{3,20}$')
         if not valid_name_regex.fullmatch(username):
-            raise AuthError("username must be 3-25 characters long and cannot contain special characters")
+            raise AuthError("username must be 3-20 characters long and cannot contain special characters")
 
         if len(password) < 3:
             raise AuthError("password must be at least 3 characters long")
