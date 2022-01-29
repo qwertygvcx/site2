@@ -6,12 +6,20 @@ from os import environ
 import time
 import secrets
 
+from flaskext.markdown import Markdown
+
 
 app = Flask(__name__, static_folder='_static')
 
 app.config['SECRET_KEY'] = environ.get('MASTER_KEY')
 app.config['SITE_COLOR'] = environ.get('SITE_COLOR')
 app.config['SITE_NAME'] = environ.get('SITE_NAME')
+
+# max allowed attachment size
+app.config['MAX_ATTACHMENT_SIZE'] = int(environ.get('MAX_FILE_SIZE', 20))
+app.config['MAX_CONTENT_LENGTH'] = int(environ.get('MAX_FILE_SIZE', 20))*1024*1024
+
+Markdown(app)
 
 # import jinja filters and globals
 from app.helpers.jinja import *
@@ -37,11 +45,11 @@ def before_request():
 
 @app.get("/")
 @auth_desired
-def index(v):
+def index():
 
     boards = g.db.query(Board).filter_by(private=False).all()
 
-    return render_template("home.html", boards=boards, v=v)
+    return render_template("home.html", boards=boards, v=g.v)
 
 
 # import routes
@@ -49,6 +57,9 @@ from app.routes import *
 app.register_blueprint(auth)
 app.register_blueprint(settings)
 app.register_blueprint(user_blueprint)
+app.register_blueprint(boards)
+app.register_blueprint(posts_blueprint)
+app.register_blueprint(static_blueprint)
 
 
 @app.post('/logout')
@@ -77,6 +88,7 @@ def after_request(response):
 @app.teardown_appcontext
 def teardown(e):
     """ always close db, even after failed requests """
+    g.db.rollback()
     g.db.close()
 
 

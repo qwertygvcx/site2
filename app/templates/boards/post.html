@@ -1,0 +1,45 @@
+{% set board = post.board %}
+{% extends "index.html" %}
+{% block title %}{% if post.title %}{{ post.title }}{% else %}Thread{% endif %} - /{{ board.name }}/{% endblock %}
+{% block content %}
+	{% include "boards/header.html" %}
+	{% if v %}
+		<div class="submit-wrapper">
+			<div class="submit-form">
+				<strong>Reply to post</strong>
+				<form enctype="multipart/form-data" action="{{ url_for('posts_blueprint.submit', boardname=board.name, pid=post.id) }}" method="post">
+					<input type="text" class="field" name="options" placeholder="Options" />
+					<textarea maxlength="10000" name="body" cols="50" rows="3" class="field"></textarea>
+					<span class="file-field">
+						<input type="file" name="file" accept="image/*, audio/*, video/*, application/pdf" />
+					</span>
+					<input type="submit" class="field" value="Reply" />
+				</form>
+			</div>
+		</div>
+	{% endif %}
+	<hr />
+	<a class="link-btn" href="{{ board.permalink }}">back</a>
+	<hr />
+	<div class="post" id="{{ post.id }}">
+		<span class="wingding">
+			<span class="no-mobile">>></span>
+		</span>
+		{% include "components/post_header.html" %}
+		{% if post.attachment_url %}
+			{% include "components/attachment.html" %}
+		{% endif %}
+		<blockquote class="post ugc">
+			{{ post.body_html | markdown }}
+		</blockquote>
+	</div>
+
+	{% for post in replies %}
+		{% include "components/reply.html" %}
+	{% endfor %}
+	<div class="footer">
+		{% if replies %}
+			<a class="link-btn" href="#">back to top</a>
+		{% endif %}
+	</div>
+{% endblock %}

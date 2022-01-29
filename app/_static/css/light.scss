@@ -1,9 +1,12 @@
-$color-primary: #efefef;
+$color-primary: #eef2ff;
 $color-secondary: white;
 
 $text-muted: #707070;
 
 //font
 $font-family: arial,helvetica,sans-serif;
+
+// post reply background color
+$reply-color: #d6daf0;
 
 @import 'main.scss';

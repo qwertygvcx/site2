@@ -1,0 +1,23 @@
+{% set listing=True %}
+{% for post in posts %}
+	<div id="thread-{{ post.id }}" class="thread">
+		{% if not board %}
+			<h3><a href="{{ post.board.permalink }}">/{{ post.board.name }}/{% if post.board.title %}: {{ post.board.title }}{% endif %}</a></h3>
+		{% endif %}
+		<div class="post" id="{{ post.id }}">
+			<span class="wingding">
+				<span class="no-mobile">>></span>
+			</span>
+			{% include "components/post_header.html" %}
+			{% if post.attachment_url %}
+				{% include "components/attachment.html" %}
+			{% endif %}
+			<blockquote class="post ugc">
+				{{ post.body_html | markdown }}
+			</blockquote>
+		</div>
+		{% for post in post.preview_replies() %}
+			{% include "components/reply.html" %}
+		{% endfor %}
+	</div>
+{% endfor %}

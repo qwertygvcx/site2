@@ -1,0 +1,16 @@
+<div class="post post-reply" id="{{ post.id }}">
+	<span class="wingding">
+		<span class="no-mobile">
+			>>
+		</span>
+	</span>
+	<div class="reply-container">
+		{% include "components/post_header.html" %}
+		{% if post.attachment_url %}
+			{% include "components/attachment.html" %}
+		{% endif %}
+		<blockquote class="post ugc">
+			{{ post.body_html | markdown }}
+		</blockquote>
+	</div>
+</div>

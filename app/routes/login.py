@@ -32,7 +32,7 @@ def auth_before_request():
         return redirect(redirect_to)
 
 
-@auth.get('/login')
+@auth.get('/c/login')
 def login_get():
 
     redirect_to = request.args.get('redirect', '/')
@@ -44,7 +44,7 @@ def login_get():
     return render_template("login.html", redirect=redirect_to)
 
 
-@auth.post('/login')
+@auth.post('/c/login')
 def login_post():
 
     try:
@@ -75,7 +75,7 @@ def login_post():
         return render_template('login.html', error="invalid username/password")
 
 
-@auth.post('/register')
+@auth.post('/c/register')
 def signup():
 
     try:

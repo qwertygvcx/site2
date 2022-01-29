@@ -8,7 +8,7 @@ from flask import (
 )
 from app.helpers.wrappers import get_logged_in_user
 
-settings = Blueprint('settings', __name__, url_prefix='/settings')
+settings = Blueprint('settings', __name__, url_prefix='/c/settings')
 
 
 @settings.before_request

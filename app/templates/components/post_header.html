@@ -1,0 +1,36 @@
+<div class="post-info">
+	{% if post.anon %}
+	<span class="post-detail post-author">
+		<strong class="anon">Anonymous</strong>
+	</span>
+	{% else %}
+	<span class="post-detail post-author">
+		<strong class="post-info-author author">{{ post.author.name }}</strong>
+	</span>
+	{% endif %}
+	<span class="post-detail post-title">
+		<strong>{{ post.title }}</strong>
+	</span>
+	<span class="post-detail post-age">
+		{{ post.created_string }}
+	</span>
+	<span class="post-detail post-id">
+		<a href="#{{ post.id }}">No.</a><a href="#{{ post.id }}">{{ post.id }}</a>
+	</span>
+	{% if listing and post.is_top_level %}
+		<span class="post-detail post-link">
+			[
+				<a href="{{ post.permalink }}">View thread</a>
+			]
+		</span>
+	{% endif %}
+	<span class="post-detail quoted-by">
+		{% for p in post.quoted_by %}
+			{% if listing %}
+				<a href="{{ post.no_anchor_link }}#{{ p }}">>>{{ p }}</a>
+			{% else %}
+				<a href="#{{ p }}">>>{{ p }}</a>
+			{% endif %}
+		{% endfor %}
+	</span>
+</div>

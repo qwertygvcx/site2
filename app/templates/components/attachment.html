@@ -1,0 +1,32 @@
+<div class="attachment-wrapper">
+	<div class="attachment">
+		<a class="attachment-link" href="{{ post.attachment_url }}" target="_blank">
+			{% if post.attachment_mimetype.startswith('image/') %}
+				 <div class="image-wrap">
+				 	<img src="{{ post.attachment_url }}" loading="lazy" />
+				 </div>
+			{% elif post.attachment_mimetype.startswith('audio/') %}
+				<audio controls src="{{ post.attachment_url }}">
+					Unsupported file type :(
+				</audio>
+			{% elif post.attachment_mimetype.startswith('video/') %}
+				<video controls width="250">
+					<source src="{{ post.attachment_url }}" type="{{ post.attachment_mimetype }}">
+					Unsupported file type :(
+				</video>
+			{% endif %}
+		</a>
+		{% if post.attachment_mimetype == "application/pdf" %}
+			<div class="pdf-wrapper">
+				<h4>{{ post.attachment_name }}</h4>
+				<a href="{{ post.attachment_url }}" target="_blank">Open in PDF viewer</a>
+			</div>
+		{% endif %}
+		<div class="attachment-details">
+			<a class="attachment-download" href="{{ post.attachment_url }}?download">{{ post.attachment_name }}</a>
+			<div class="attachment-info">
+				{{ post.attachment_size }}KB {{ post.attachment_type }}
+			</div>
+		</div>
+	</div>
+</div>

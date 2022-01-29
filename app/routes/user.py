@@ -7,7 +7,9 @@ user_blueprint = Blueprint('user_blueprint', __name__)
 
 @user_blueprint.get('/my_info')
 @auth_required
-def my_info(v):
+def my_info():
+
+	v = g.v
 
 	hide_fields = (
 		'passhash',

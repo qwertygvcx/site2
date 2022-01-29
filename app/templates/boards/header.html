@@ -1,0 +1,11 @@
+<div class="board-header">
+	{% if board %}
+		<h1>/{{ board.name }}/{% if board.title %}: {{ board.title }}{% endif %}</h1>
+		{% if board.description %}
+			<p class="desc">{{ board.description }}</p>
+		{% endif %}
+	{% else %}
+		<h1>Overboard: All posts</h1>
+		<p class="desc">All posts from all boards, sorted by new.</p>
+	{% endif %}
+</div>

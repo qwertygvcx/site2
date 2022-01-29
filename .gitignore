@@ -132,3 +132,4 @@ dmypy.json
 .idea/
 *.map
 *.scssc
+app/_static/ugc

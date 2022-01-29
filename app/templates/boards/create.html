@@ -1,0 +1,31 @@
+{% extends "index.html" %}
+{% block title %}Create board{% endblock %}
+{% block content %}
+
+{% if error %}
+	<h4 class="red">{{ error }}</h4>
+{% endif %}
+
+<form class="form" action="{{ url_for('boards.post_create') }}" method="post">
+	<h2>Create board</h2>
+	<div class="form-entry">
+		<label for="name">board name: <span class="red">*</span></label>
+		<input type="text" name="name" required placeholder="enter board name">
+		<p class="hint">must be between 3-20 characters and cannot contain special characters</p>
+	</div>
+	<div class="form-entry">
+		<label for="title">board title:</label>
+		<input type="text" name="title" placeholder="enter board title">
+	</div>
+	<div class="form-entry">
+		<label for="desc">board description:</label>
+		<textarea rows="5" name="desc" placeholder="enter board description"></textarea>
+	</div>
+	<div class="form-entry">
+		<input type="submit" value="create" />
+	</div>
+</form>
+
+<p class="hint">required fields are marked with <strong class="red">*</strong></p>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+{% block title %}
+	{% if board %}
+		/{{ board.name }}/{% if board.title %}: {{ board.title }}{% endif %}
+	{% else %}
+		Overboard: All posts
+	{% endif %}
+{% endblock %}
+{% block content %}
+	{% include "boards/header.html" %}
+	{% if board %}
+		{% if v %}
+			<div class="submit-wrapper">
+				<div class="submit-form">
+					<strong>New thread</strong>
+					<form enctype="multipart/form-data" action="{{ url_for('posts_blueprint.submit', boardname=board.name) }}" method="post">
+						<input type="text" class="field" name="options" placeholder="Options" />
+						<input required maxlength="50" type="text" class="field" name="title" placeholder="Subject" />
+						<textarea maxlength="10000" required name="body" cols="50" rows="3" class="field"></textarea>
+						<span class="file-field">
+							<input type="file" name="file" accept="image/*, audio/*, video/*, application/pdf" />
+						</span>
+						<input type="submit" class="field" value="Create thread" />
+					</form>
+				</div>
+			</div>
+		{% endif %}
+	{% endif %}
+	<div class="board-links">
+		<a class="link-btn" href="{% if board %}{{ url_for('boards.get_board_page', name=board.name) }}{% else %}{{ url_for('boards.overboard') }}{% endif %}">Index</a>
+		<form class="cat-search">
+			<input class="search-bar" type="text" name="filter" placeholder="enter search text" {% if query %}value="{{ query }}"{% endif %} />
+			<input type="submit" value="search" class="link-btn" />
+		</form>
+	</div>
+	<div class="catalog-container">
+		{% for post in posts %}
+			<div class="thread-card">
+				<div class="post-card">
+					{% if not board %}
+						<h3><a href="{{ post.board.permalink }}">/{{ post.board.name }}/{% if post.board.title %}: {{ post.board.title }}{% endif %}</a></h3>
+					{% endif %}
+					<h3>R: {{ post.comment_count }} / Q: {{ post.quote_count }}</h3>
+					{% if post.attachment_url %}
+						{% include "components/attachment.html" %}
+					{% endif %}
+					<div class="post-card-content">
+						<strong class="post-card-title"><a href="{{ post.permalink }}">{{ post.title }}</a></strong>
+						<blockquote class="post-card-body ugc">
+							{{ post.body_html | markdown }}
+						</blockquote>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	<div class="footer">
+		{% if posts %}
+			<a class="link-btn" href="#">back to top</a>
+			{% if page > 1 %}
+				<a class="link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
+			{% endif %}
+			{% if has_next %}
+				<a class="link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
+			{% endif %}
+		{% endif %}
+	</div>
+{% endblock %}

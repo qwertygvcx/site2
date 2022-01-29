@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% block title %}
+	{% if board %}
+		/{{ board.name }}/{% if board.title %}: {{ board.title }}{% endif %}
+	{% else %}
+		Overboard: All posts
+	{% endif %}
+{% endblock %}
+{% block content %}
+	{% include "boards/header.html" %}
+	{% if board %}
+		{% if v %}
+			<div class="submit-wrapper">
+				<div class="submit-form">
+					<strong>New thread</strong>
+					<form enctype="multipart/form-data" action="{{ url_for('posts_blueprint.submit', boardname=board.name) }}" method="post">
+						<input type="text" class="field" name="options" placeholder="Options" />
+						<input required maxlength="50" type="text" class="field" name="title" placeholder="Subject" />
+						<textarea maxlength="10000" required name="body" cols="50" rows="3" class="field"></textarea>
+						<span class="file-field">
+							<input type="file" name="file" accept="image/*, audio/*, video/*, application/pdf" />
+						</span>
+						<input type="submit" class="field" value="Create thread" />
+					</form>
+				</div>
+			</div>
+		{% endif %}
+	{% endif %}
+	<div class="board-links">
+		<a class="link-btn" href="{% if board %}{{ url_for('boards.get_board_catalog', name=board.name) }}{% else %}{{ url_for('boards.overboard_catalog') }}{% endif %}">Catalog</a>
+	</div>
+	<div class="threads">
+		{% include "components/post_listing.html" %}
+		{% if posts %}
+			<div class="clear">
+				<hr />
+				<a class="link-btn" href="#">back to top</a>
+				{% if page > 1 %}
+					<a class="link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
+				{% endif %}
+				{% if has_next %}
+					<a class="link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
+				{% endif %}
+			</div>
+		{% else %}
+			<h4 class="red">dead {% if board %}board{% else %}site{% endif %} xd</h4>
+		{% endif %}
+	</div>
+	{% if posts %}
+		<hr />
+	{% endif %}
+{% endblock %}

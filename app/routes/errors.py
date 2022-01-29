@@ -15,3 +15,15 @@ def error_401(e):
 		return redirect(url_for('auth.login_get', redirect=redirect_to))
 	else:
 		return render_template('errors/401.html')
+
+
+@app.errorhandler(413)
+def error_413(e):
+
+	g.db.rollback()
+	return render_template(
+		'message.html',
+		title="413 File too large",
+		message=f"attachments cannot be larger than {app.config['MAX_ATTACHMENT_SIZE']}MB.",
+		v=g.v
+	), 413

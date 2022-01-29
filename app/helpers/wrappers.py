@@ -31,7 +31,9 @@ def auth_desired(f):
 	def wrapper(*args, **kwargs):
 		v = get_logged_in_user()
 
-		return f(*args, v=v, **kwargs)
+		g.v = v
+
+		return f(*args, **kwargs)
 
 	wrapper.__name__ = f.__name__
 	return wrapper
@@ -48,7 +50,9 @@ def auth_required(f):
 		if not v:
 			abort(401)
 
-		return f(*args, v=v, **kwargs)
+		g.v = v
+
+		return f(*args, **kwargs)
 
 	wrapper.__name__ = f.__name__
 	return wrapper
