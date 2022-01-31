@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% block title %}/{{ board.name }}/{% endblock %}
+{% block content %}
+	{% include "boards/header.html" %}
+	<div class="board-links">
+		<a class="link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
+	</div>
+	{% if mod.perm_content %}
+		<h2>Content</h2>
+		<ul>
+			<li>
+				<a href="{{ url_for('boards.board_reports', boardname=board.name) }}">Reports</a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="{{ url_for('boards.board_approved', boardname=board.name) }}">Approved posts</a>
+			</li>
+		</ul>
+	{% endif %}
+{% endblock %}

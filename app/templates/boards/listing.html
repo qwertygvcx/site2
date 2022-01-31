@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+{% block title %}{{ title }} - /{{ board.name }}/{% endblock %}
+{% block content %}
+	{% include "boards/header.html" %}
+	<div class="board-links">
+		<a class="link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
+		{% if mod %}
+			<a class="link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Back to mod tools</a>
+		{% endif %}
+	</div>
+	<hr />
+	{% if posts %}
+		{% if bulk_actions %}
+			<form id="bulk-actions-form" class="form">
+				{% for post in posts %}
+					{% include "components/reply.html" %}
+				{% endfor %}
+				<input type="submit" class="btn-danger" value="bulk delete" />
+			</form>
+		{% else %}
+			{% for post in posts %}
+				{% include "components/reply.html" %}
+			{% endfor %}
+		{% endif %}
+		<div class="footer">
+			{% if posts %}
+				<a class="link-btn" href="#">back to top</a>
+				{% if page > 1 %}
+					<a class="link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
+				{% endif %}
+				{% if has_next %}
+					<a class="link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
+				{% endif %}
+			{% endif %}
+		</div>
+	{% else %}
+		<h4 class="red">there doesn't seem to be anything here</h4>
+	{% endif %}
+{% endblock %}

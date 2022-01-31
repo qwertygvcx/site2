@@ -56,3 +56,30 @@ def auth_required(f):
 
 	wrapper.__name__ = f.__name__
 	return wrapper
+
+
+def mod_required(permission):
+	def wrapper_maker(f):
+		def wrapper(*args, **kwargs):
+
+			boardname = kwargs.get("boardname")
+			board = get_board(boardname)
+
+			if not board:
+				abort(404)
+
+			if not board.has_mod(g.v, permission):
+				abort(403)
+
+			# permabanned accounts can't moderate
+			if g.v._banned and not g.v.unban_utc:
+				abort(403)
+
+			kwargs.pop('boardname')
+
+			return f(*args, board=board, **kwargs)
+
+		wrapper.__name__ = f.__name__
+		return wrapper
+
+	return wrapper_maker

@@ -29,7 +29,7 @@
 	<div class="board-links">
 		<a class="link-btn" href="{% if board %}{{ url_for('boards.get_board_page', name=board.name) }}{% else %}{{ url_for('boards.overboard') }}{% endif %}">Index</a>
 		<form class="cat-search">
-			<input class="search-bar" type="text" name="filter" placeholder="enter search text" {% if query %}value="{{ query }}"{% endif %} />
+			<input class="form-input" type="text" name="filter" placeholder="enter search text" {% if query %}value="{{ query }}"{% endif %} />
 			<input type="submit" value="search" class="link-btn" />
 		</form>
 	</div>

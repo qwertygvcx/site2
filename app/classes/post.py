@@ -1,9 +1,10 @@
 from sqlalchemy import *
 from app.__main__ import Base
 import time, datetime
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, joinedload
 from .mutable_list import *
 from flask import g
+from .report import *
 
 
 class Post(Base):
@@ -22,9 +23,12 @@ class Post(Base):
 	anon = Column(Boolean, default=True)
 	spam = Column(Boolean, default=False)
 	archived = Column(Boolean, default=False)
+	pinned = Column(Boolean, default=False)
 	last_bump_utc = Column(Integer)
 	attachment_url = Column(String(255))
 	quoted_by = Column(MutableList.as_mutable(ARRAY(Integer)), default=[])
+	mod = Column(Boolean, default=False)
+	approved = Column(Boolean, default=False)
 
 	attachment_size = Column(Integer)
 	attachment_type = Column(String(20))
@@ -36,6 +40,7 @@ class Post(Base):
 	replies = relationship('Post', backref=backref('parent', remote_side=[id]))
 	board = relationship('Board', primaryjoin='Post.board_id == Board.id', uselist=False)
 	author = relationship('User', primaryjoin='Post.author_id == User.id', uselist=False)
+	reports = relationship('Report', primaryjoin='Post.id == Report.post_id')
 
 	def __repr__(self):
 		return f'<Post(id={self.id})>'
@@ -73,11 +78,14 @@ class Post(Base):
 	def quote_count(self):
 		return len(self.quoted_by)
 
-	def reply_listing(self, limit=None):
+	def reply_listing(self, limit=None, mod=False):
 		posts = g.db.query(Post).filter_by(parent_id=self.id).order_by(Post.created_utc.asc())
 
 		if limit:
 			posts = posts.limit(limit)
+
+		if mod:
+			posts = posts.options(joinedload(Post.reports.and_(Report.is_global == False)))
 
 		return posts.all()
 

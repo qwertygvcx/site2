@@ -8,6 +8,7 @@ from flask import (
 )
 from app.helpers.wrappers import *
 from app.classes.board import *
+from app.classes.board_relationships import *
 from app.helpers.get import get_board
 import re, time
 
@@ -98,6 +99,13 @@ def post_create():
 		g.db.add(new_board)
 		g.db.flush()
 
+		mod_rel = ModRelationship(
+			user_id=g.v.id,
+			board_id=new_board.id
+		)
+
+		g.db.add(mod_rel)
+
 		return redirect(new_board.permalink)
 
 	except BoardError as e:
@@ -163,6 +171,15 @@ def get_board_page(name):
 	posts = listing[0]
 	has_next = listing[1]
 
+	mod = False
+	if g.v:
+		mod = b.get_mod(g.v)
+
+	if mod:
+		reveal_names = mod.perm_users
+	else:
+		reveal_names = False
+
 	return render_template(
 		'boards/index.html',
 		v=g.v,
@@ -170,7 +187,9 @@ def get_board_page(name):
 		posts=posts,
 		has_next=has_next,
 		page=page,
-		limit=limit
+		limit=limit,
+		mod=bool(mod),
+		reveal_names=reveal_names
 	)
 
 
@@ -199,4 +218,87 @@ def get_board_catalog(name):
 		page=page,
 		limit=limit,
 		query=query
+	)
+
+
+@boards.get('/<name>/mod')
+@auth_required
+def board_mod(name):
+
+	b = get_board(name)
+	if not b:
+		abort(404)
+
+	mod = b.get_mod(g.v)
+	if not mod:
+		abort(403)
+
+	return render_template(
+		'boards/mod_settings.html',
+		v=g.v,
+		board=b,
+		mod=mod
+	)
+
+
+@boards.get('/<boardname>/mod/reports')
+@auth_required
+@mod_required("content")
+def board_reports(board):
+
+	page = int(request.args.get("page", 1))
+	limit = min(int(request.args.get("limit", 25)), 200)
+
+	posts = g.db.query(Post).filter_by(board_id=board.id).\
+		options(joinedload(Post.reports)).\
+		join(Report, Post.id == Report.post_id).\
+		filter(Report.is_global == False)
+
+	has_next = posts.count() > page*limit
+
+	mod = board.get_mod(g.v)
+
+	return render_template(
+		'boards/listing.html',
+		v=g.v,
+		board=board,
+		posts=posts.all(),
+		has_next=has_next,
+		page=page,
+		limit=limit,
+		mod_view=True,
+		mod=mod,
+		reveal_names=mod.perm_users,
+		title="Reported posts",
+		show_thread_link=True
+	)
+
+
+@boards.get('/<boardname>/mod/approved')
+@auth_required
+@mod_required("content")
+def board_approved(board):
+
+	page = int(request.args.get("page", 1))
+	limit = min(int(request.args.get("limit", 25)), 200)
+
+	posts = g.db.query(Post).filter_by(board_id=board.id, approved=True)
+
+	has_next = posts.count() > page*limit
+
+	mod = board.get_mod(g.v)
+
+	return render_template(
+		'boards/listing.html',
+		v=g.v,
+		board=board,
+		posts=posts.all(),
+		has_next=has_next,
+		page=page,
+		limit=limit,
+		mod_view=True,
+		mod=mod,
+		reveal_names=mod.perm_users,
+		title="Approved posts",
+		show_thread_link=True
 	)

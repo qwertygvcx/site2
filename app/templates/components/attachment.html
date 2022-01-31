@@ -1,6 +1,6 @@
 <div class="attachment-wrapper">
 	<div class="attachment">
-		<a class="attachment-link" href="{{ post.attachment_url }}" target="_blank">
+		<a class="attachment-link" {% if post.attachment_mimetype.startswith('image/') %}href="{{ post.attachment_url }}" target="_blank"{% else %}href="javascript:void()"{% endif %}>
 			{% if post.attachment_mimetype.startswith('image/') %}
 				 <div class="image-wrap">
 				 	<img src="{{ post.attachment_url }}" loading="lazy" />

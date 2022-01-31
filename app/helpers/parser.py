@@ -22,7 +22,8 @@ allowed_tags = [
 	'sub',
 	'sup',
 	'ul',
-	'a'
+	'a',
+	'span'
 ]
 
 
@@ -45,8 +46,9 @@ allowed_styles = ['color']
 # apply `nofollow noopener noreferrer` to outgoing links
 def noreferrer(attrs, new=False):
 
-	attrs[(None, "target")] = "_blank"
-	attrs[(None, "rel")] = "nofollow noopener noreferrer"
+	if not attrs[(None, "href")].startswith('/'):
+		attrs[(None, "target")] = "_blank"
+		attrs[(None, "rel")] = "nofollow noopener noreferrer"
 
 	return attrs
 

@@ -1,15 +1,35 @@
 <div class="post-info">
-	{% if post.anon %}
-	<span class="post-detail post-author">
-		<strong class="anon">Anonymous</strong>
-	</span>
-	{% else %}
-	<span class="post-detail post-author">
-		<strong class="post-info-author author">{{ post.author.name }}</strong>
-	</span>
+	{% if bulk_actions %}
+		<span class="post-detail post-checkbox">
+			<input type="checkbox" name="{{ post.id }}" />
+		</span>
+	{% endif %}
+	{% if post.pinned %}
+		<span class="post-detail post-pinned">
+			<strong class="anon">[pinned]</strong>
+		</span>
 	{% endif %}
 	<span class="post-detail post-title">
 		<strong>{{ post.title }}</strong>
+	</span>
+	<span class="post-detail post-author">
+		<span class="post-info-author">
+			<strong class="{% if post.mod %}mod{% elif post.anon %}anon{% else %}author{% endif %}">
+				{% if post.anon and not reveal_names %}
+					Anonymous
+				{% else %}
+					{{ post.author.name }}
+				{% endif %}
+				{% if post.mod %}
+					# mod
+				{% endif %}
+			</strong>
+			{% if post.anon and reveal_names %}
+				<span class="anon" title="anonymous post, but you can see the username because you mod this board">
+					[hidden]
+				</span>
+			{% endif %}
+		</span>
 	</span>
 	<span class="post-detail post-age">
 		{{ post.created_string }}
@@ -17,12 +37,30 @@
 	<span class="post-detail post-id">
 		<a href="#{{ post.id }}">No.</a><a href="#{{ post.id }}">{{ post.id }}</a>
 	</span>
-	{% if listing and post.is_top_level %}
+	{% if mod and post.approved %}
+		<span class="anon" title="this post no longer accepts reports">
+			approved
+		</span>
+	{% endif %}
+	{% if (listing and post.is_top_level) or show_thread_link %}
 		<span class="post-detail post-link">
 			[
 				<a href="{{ post.permalink }}">View thread</a>
 			]
 		</span>
+	{% endif %}
+	{% if board and v %}
+		<div class="post-detail post-actions">
+			<div class="actions-anchor">
+				<span class="actions-label">
+					&#9660;
+				</span>
+				<div class="actions">
+					<a class="action action-report" href="{{ url_for('posts_blueprint.report_post', boardname=board.name, pid=post.id) }}" target="_blank">Report</a>
+					<a class="action action-report-global" href="" target="_blank">Report Globally</a>
+				</div>
+			</div>
+		</div>
 	{% endif %}
 	<span class="post-detail quoted-by">
 		{% for p in post.quoted_by %}

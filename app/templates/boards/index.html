@@ -28,6 +28,9 @@
 	{% endif %}
 	<div class="board-links">
 		<a class="link-btn" href="{% if board %}{{ url_for('boards.get_board_catalog', name=board.name) }}{% else %}{{ url_for('boards.overboard_catalog') }}{% endif %}">Catalog</a>
+		{% if mod %}
+			<a class="link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Settings</a>
+		{% endif %}
 	</div>
 	<div class="threads">
 		{% include "components/post_listing.html" %}

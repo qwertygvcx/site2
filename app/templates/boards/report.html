@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block title %}Report post to board management{% endblock %}
+{% block content %}
+	<h2>Report post to moderators</h2>
+	<form class="form" action="{{ url_for('posts_blueprint.submit_report', pid=post.id) }}" method="post">
+		<div class="form-entry">
+			<label for="reason">reason for reporting:</label>
+			<textarea required rows="5" name="reason" placeholder="enter reason for reporting"></textarea>
+		</div>
+		<div class="form-entry">
+			<input type="submit" class="link-btn" value="submit report" />
+		</div>
+	</form>
+	<h3>Reporting:</h3>
+	{% include "components/reply.html" %}
+{% endblock %}

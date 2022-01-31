@@ -4,6 +4,7 @@ from app.__main__ import Base
 import time
 from flask import g
 from app.classes.post import *
+from .board_relationships import *
 #from helpers.time import *
 
 
@@ -36,11 +37,12 @@ class Board(Base):
     def permalink(self):
         return "/%s/" % self.name
 
-    def get_listing(self, page=1, limit=25, query=None):
+    def get_listing(self, page=1, limit=25, query=None, mod=False):
 
         posts = g.db.query(Post).filter(
             Post.board_id == self.id,
-            Post.parent_id == None)
+            Post.parent_id == None,
+            Post.pinned == False)
 
         posts = posts.order_by(Post.last_bump_utc.desc())
 
@@ -55,7 +57,28 @@ class Board(Base):
                 )
             )
 
-        has_next = posts.count() > page*limit
+        if mod:
+            posts = posts.options(joinedload(Post.reports.and_(Report.is_global == False)))
 
-        return (posts.offset(limit * (page - 1)).limit(limit).all(), has_next)
-    
+        has_next = posts.count() > page*limit
+        posts = posts.offset(limit * (page - 1)).limit(limit).all()
+
+        if page == 1:
+            sticky = g.db.query(Post).filter_by(board_id=self.id, parent_id=None, pinned=True).first()
+            if sticky:
+                posts = [sticky] + posts
+
+        return (posts, has_next)
+
+    def get_mod(self, user, permission=None) -> ModRelationship:
+
+        mod = g.db.query(ModRelationship).filter_by(board_id=self.id, user_id=user.id)
+
+        if permission:
+            mod = mod.filter(ModRelationship.__dict__[f'perm_{permission}'] == True)
+
+        return mod.first()
+
+    def has_mod(self, user, permission=None) -> bool:
+
+        return bool(self.get_mod(user, permission=permission))
