@@ -1,5 +1,5 @@
 from sqlalchemy import *
-#from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 from app.__main__ import Base
 import time
 #from flask import g
@@ -32,6 +32,9 @@ class User(Base):
 	ban_reason = Column(String(255))
 
 	deleted_utc = Column(Integer, default=0)
+
+	moderates = relationship("ModRelationship", primaryjoin="User.id == ModRelationship.user_id")
+	banned_from = relationship("BanRelationship", primaryjoin="User.id == BanRelationship.user_id")
 
 	def __init__(self, **kwargs):
 

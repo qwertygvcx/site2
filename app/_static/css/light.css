@@ -53,16 +53,16 @@ nav {
       font-weight: bold;
       font-size: 1.5rem; }
 
-#logout {
+.inline-form {
   display: inline-block; }
-  #logout input[type="submit"] {
+  .inline-form input[type="submit"] {
     padding: 0;
     margin: 0;
     border: none;
     background-color: transparent;
     cursor: pointer;
     font-family: inherit; }
-  #logout input[type="submit"]:hover {
+  .inline-form input[type="submit"]:hover {
     text-decoration: underline; }
 
 .form-submit {
@@ -71,7 +71,7 @@ nav {
 .error, .red {
   color: crimson; }
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
   box-sizing: border-box; }
 
 textarea {
@@ -87,7 +87,7 @@ textarea {
     .form .form-entry label {
       font-weight: bold;
       display: block; }
-    .form .form-entry input[type="text"], .form .form-entry textarea {
+    .form .form-entry input[type="text"], .form .form-entry input[type="number"], .form .form-entry textarea {
       display: block;
       width: 100%; }
 
@@ -478,5 +478,22 @@ blockquote.ugc:first-child {
 .post-card-body {
   text-align: left;
   font-size: 80%; }
+
+.ban-message {
+  margin-left: 0 !important;
+  padding-left: 25px !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-left: 3px solid gray;
+  color: gray; }
+
+.ban-listing {
+  width: 100%;
+  max-width: 900px; }
+  .ban-listing th {
+    text-align: left; }
+  .ban-listing input[type="submit"] {
+    color: crimson;
+    text-decoration: underline; }
 
 /*# sourceMappingURL=light.css.map */

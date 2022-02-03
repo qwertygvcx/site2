@@ -12,6 +12,9 @@
 		<blockquote class="post ugc">
 			{{ post.body_html | markdown }}
 		</blockquote>
+		{% if post.banned_for %}
+			<h4 class="red banned-for">(USER WAS BANNED FOR THIS POST)</h4>
+		{% endif %}
 		{% if mod_view %}
 			<div class="mod-reply">
 				<form action="{{ url_for('posts_blueprint.mod_delete_post', boardname=board.name, pid=post.id) }}" method="post">

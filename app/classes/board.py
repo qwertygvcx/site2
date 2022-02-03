@@ -82,3 +82,25 @@ class Board(Base):
     def has_mod(self, user, permission=None) -> bool:
 
         return bool(self.get_mod(user, permission=permission))
+
+    def get_ban_by_id(self, id, check_expiry=True) -> BanRelationship:
+
+        ban = g.db.query(BanRelationship).filter_by(board_id=self.id, id=id)
+
+        if check_expiry:
+            ban = ban.filter(or_(BanRelationship.expires_utc == 0, BanRelationship.expires_utc >= int(time.time())))
+
+        return ban.first()
+
+    def get_ban(self, user, check_expiry=True) -> BanRelationship:
+
+        ban = g.db.query(BanRelationship).filter_by(board_id=self.id, user_id=user.id)
+
+        if check_expiry:
+            ban = ban.filter(or_(BanRelationship.expires_utc == 0, BanRelationship.expires_utc >= int(time.time())))
+
+        return ban.first()
+
+    def has_ban(self, user):
+
+        return bool(self.get_ban(user))

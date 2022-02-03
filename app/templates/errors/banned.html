@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block title %}you are banned lol{% endblock %}
+{% block content %}
+	<h2>You are banned ;-;</h2>
+	<p>You are banned from /{{ board.name }}/{% if ban %} for posting <a class="post-mention" href="{{ post.permalink }}">>>>/{{ board.name }}/{{ post.id }}{% endif %}.</a>
+	{% if reason %}
+		<p>Reason for your ban:</p>
+		<blockquote class="ban-message">{{ reason }}</blockquote>
+	{% endif %}
+
+	{% if ban.expires_utc > 0 %}
+		<p>Your ban will expire on {{ ban.expires }}, which is {% if ban.duration_days > 1 %}{{ ban.duration_days }} days{% else %}a day{% endif %} from now.</p>
+	{% else %}
+		<p>Your ban is permanent.</p>
+	{% endif %}
+{% endblock %}

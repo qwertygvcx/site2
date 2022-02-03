@@ -90,6 +90,9 @@
 		<blockquote class="post ugc">
 			{{ post.body_html | markdown }}
 		</blockquote>
+		{% if post.banned_for %}
+			<h4 class="red banned-for">(USER WAS BANNED FOR THIS POST)</h4>
+		{% endif %}
 	</div>
 
 	{% for post in replies %}

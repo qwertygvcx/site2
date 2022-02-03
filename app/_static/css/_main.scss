@@ -69,7 +69,7 @@ nav {
     }
 }
 
-#logout {
+.inline-form {
     display: inline-block;
 
     input[type="submit"] {
@@ -94,7 +94,7 @@ nav {
     color: crimson;
 }
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
     box-sizing: border-box;
 }
 
@@ -116,7 +116,7 @@ textarea {
             display: block;
         }
 
-        input[type="text"], textarea {
+        input[type="text"], input[type="number"], textarea {
             display: block;
             width: 100%;
         }
@@ -600,4 +600,25 @@ blockquote.ugc:first-child {
 .post-card-body {
     text-align: left;
     font-size: 80%;
+}
+
+.ban-message {
+    margin-left: 0!important;
+    padding-left: 25px!important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left: 3px solid gray;
+    color: gray;
+}
+
+.ban-listing {
+    width: 100%;
+    max-width: 900px;
+    th {
+        text-align: left;
+    }
+    input[type="submit"] {
+        color: crimson;
+        text-decoration: underline;
+    }
 }

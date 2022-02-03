@@ -3,7 +3,7 @@ from app.classes import *
 
 def get_user(name):
 
-	return g.db.query(User).filter(User.username.ilike(name)).first()
+	return g.db.query(User).filter(User.name.ilike(name)).first()
 
 
 def get_user_by_id(id):

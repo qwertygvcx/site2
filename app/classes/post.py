@@ -29,6 +29,7 @@ class Post(Base):
 	quoted_by = Column(MutableList.as_mutable(ARRAY(Integer)), default=[])
 	mod = Column(Boolean, default=False)
 	approved = Column(Boolean, default=False)
+	banned_for = Column(Boolean, default=False)
 
 	attachment_size = Column(Integer)
 	attachment_type = Column(String(20))

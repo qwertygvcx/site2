@@ -31,8 +31,18 @@ def truncate(text):
 	return r
 
 
+@posts_blueprint.get('/*/post/<pid>')
+def get_post_by_id(pid):
+
+	post = get_post(pid)
+	if not post:
+		abort(404)
+
+	return redirect(post.permalink)
+
+
 @posts_blueprint.get('/<boardname>/post/<pid>')
-def get_post_by_id(boardname, pid):
+def board_post_by_id(boardname, pid):
 
 	post = get_post(pid)
 	if not post or post.board.name != boardname:
@@ -151,7 +161,7 @@ def get_post_view(boardname, pid):
 
 
 @posts_blueprint.post("/<boardname>/submit")
-@posts_blueprint.post("/<boardname>/threads/<pid>/reply")
+@posts_blueprint.post("/<boardname>/thread/<pid>/reply")
 @auth_required
 def submit(boardname, pid = None):
 
@@ -160,6 +170,20 @@ def submit(boardname, pid = None):
 		board = get_board(boardname)
 		if not board:
 			raise PostException("invalid board")
+
+		ban = board.get_ban(g.v)
+		if not g.v.admin and not board.has_mod(g.v) and ban:
+
+			post = get_post(ban.banned_for)
+
+			return render_template(
+				'errors/banned.html',
+				ban=ban,
+				board=board,
+				reason=ban.ban_message,
+				post=post,
+				v=g.v
+			)
 
 		options = [x.strip() for x in request.form.get("options").strip().split()]
 		anon = g.v.post_anon or "anon" in options

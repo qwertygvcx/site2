@@ -302,3 +302,110 @@ def board_approved(board):
 		title="Approved posts",
 		show_thread_link=True
 	)
+
+
+@boards.get('/<boardname>/mod/bans')
+@auth_required
+@mod_required("users")
+def board_bans(board):
+
+	bans = g.db.query(BanRelationship).filter(
+		and_(
+			BanRelationship.board_id == board.id,
+			or_(
+				BanRelationship.expires_utc == 0,
+				BanRelationship.expires_utc >= int(time.time())
+			)
+		)
+	).options(
+		joinedload(BanRelationship.user),
+		joinedload(BanRelationship.banning_mod)
+	)
+
+	bans = bans.order_by(BanRelationship.created_utc.desc())
+	bans = bans.all()
+
+	return render_template('boards/bans.html', v=g.v, board=board, bans=bans)
+
+
+@boards.post('/<boardname>/ban')
+@auth_required
+@mod_required("users")
+def ban_from_board(board):
+
+	username = request.form.get("target", "")
+	reason = request.form.get("reason", "")
+
+	try:
+		post_id = int(request.form.get("post", 0))
+	except:
+		abort(400)
+
+	try:
+		duration = int(request.form.get("expiry", 0))
+	except:
+		duration = 0
+
+	message = request.form.get("message", "")
+
+	user = get_user(username)
+	if not user:
+		return render_template('message.html', title='invalid target', message='target user does not exist', v=g.v), 404
+
+	if board.has_mod(user):
+		return render_template('message.html', title='invalid target', message='you cannot ban yourself or other mods', v=g.v), 403
+
+	post = get_post(post_id)
+	is_valid_post = post and post.board_id == board.id and post.author_id == user.id
+	if not is_valid_post:
+		return render_template(
+			'message.html',
+			title='invalid post',
+			message=f"The post you specified doesn't exist, doesn't belong to /{board.name}/, or wasn't created by {user.name}.",
+			v=g.v
+		), 404
+
+	if not reason or not message:
+		return render_template(
+			'message.html',
+			title='you must provide a reason',
+			message='You must provide a reason for banning the user and a message to the banned user.',
+			v=g.v
+		), 400
+
+	if duration:
+		expires_utc = int(time.time()) + duration*60*60*24
+	else:
+		expires_utc = 0
+
+	new_ban = BanRelationship(
+		user_id=user.id,
+		banning_mod_id=g.v.id,
+		board_id=board.id,
+		ban_reason=reason,
+		ban_message=message,
+		expires_utc=expires_utc,
+		ban_ip=request.remote_addr,
+		banned_for=post.id
+	)
+
+	g.db.add(new_ban)
+
+	post.banned_for = True
+	g.db.add(post)
+
+	return redirect(post.permalink)
+
+
+@boards.post('/<boardname>/unban')
+@auth_required
+@mod_required("users")
+def unban_from_board(board):
+
+	try:
+		ban_id = int(request.form.get('id', 0))
+		ban = board.get_ban_by_id(ban_id)
+		g.db.delete(ban)
+		return redirect(request.referrer)
+	except:
+		abort(400)
