@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block title %}Ban user{% endblock %}
+{% block content %}
+	<h2>Ban <code>{{ post.author.name }}</code></h2>
+	<form class="form" action="{{ url_for('boards.ban_from_board', boardname=post.board.name) }}" method="post">
+		<input type="hidden" name="target" value="{{ post.author.name }}" />
+		<input type="hidden" name="post" value="{{ post.id }}" />
+		<div class="form-entry">
+			<label for="reason">reason for ban:</label>
+			<input type="text" name="reason" required maxlength="255" class="form-input" placeholder="ban reason" />
+		</div>
+		<div class="form-entry">
+			<label for="target">duration days (blank for permanent ban):</label>
+			<input type="number" name="expiry" class="form-input" placeholder="days until the ban expires" />
+		</div>
+		<div class="form-entry">
+			<input type="submit" class="btn-danger" value="ban user" />
+		</div>
+	</form>
+	<h3>Banning user for:</h3>
+	{% include "components/reply.html" %}
+{% endblock %}

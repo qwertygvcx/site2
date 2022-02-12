@@ -1,7 +1,7 @@
 from sqlalchemy import *
 from app.__main__ import Base
 from sqlalchemy.orm import relationship
-import time, datetime
+import time, datetime, math
 
 
 class ModRelationship(Base):
@@ -66,7 +66,7 @@ class BanRelationship(Base):
 	@property
 	def duration_days(self):
 		if self.expires_utc:
-			return (self.expires_utc-self.created_utc) // (24*60*60)
+			return math.ceil((self.expires_utc-int(time.time())) / (24*60*60))
 		else:
 			return 0
 

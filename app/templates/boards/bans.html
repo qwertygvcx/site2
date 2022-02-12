@@ -24,10 +24,6 @@
 			<input type="number" name="expiry" class="form-input" placeholder="days until the ban expires" />
 		</div>
 		<div class="form-entry">
-			<label for="desc">ban message (visible to banned user):</label>
-			<textarea rows="5" name="message" required placeholder="enter ban message"></textarea>
-		</div>
-		<div class="form-entry">
 			<input type="submit" class="btn-danger" value="ban user" />
 		</div>
 	</form>
@@ -52,7 +48,7 @@
 						<td><a target="_blank" class="post-mention" href="/*/post/{{ ban.banned_for }}">>>{{ ban.banned_for }}</a></td>
 						<td>
 							{% if ban.expires_utc > 0 %}
-								{% if ban.expires_utc > 1 %}
+								{% if ban.duration_days > 1 %}
 									in {{ ban.duration_days }} days
 								{% else %}
 									in a day

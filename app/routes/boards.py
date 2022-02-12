@@ -10,7 +10,8 @@ from app.helpers.wrappers import *
 from app.classes.board import *
 from app.classes.board_relationships import *
 from app.helpers.get import get_board
-import re, time
+from app.__main__ import app
+import re, time, os, shutil
 
 boards = Blueprint('boards', __name__)
 valid_name_regex = re.compile('^[a-zA-Z0-9-_]{3,20}$')
@@ -188,7 +189,7 @@ def get_board_page(name):
 		has_next=has_next,
 		page=page,
 		limit=limit,
-		mod=bool(mod),
+		mod=mod,
 		reveal_names=reveal_names
 	)
 
@@ -262,7 +263,7 @@ def board_reports(board):
 		'boards/listing.html',
 		v=g.v,
 		board=board,
-		posts=posts.all(),
+		posts=posts.offset(limit * (page-1)).limit(limit).all(),
 		has_next=has_next,
 		page=page,
 		limit=limit,
@@ -292,7 +293,7 @@ def board_approved(board):
 		'boards/listing.html',
 		v=g.v,
 		board=board,
-		posts=posts.all(),
+		posts=posts.offset(limit * (page-1)).limit(limit).all(),
 		has_next=has_next,
 		page=page,
 		limit=limit,
@@ -301,6 +302,88 @@ def board_approved(board):
 		reveal_names=mod.perm_users,
 		title="Approved posts",
 		show_thread_link=True
+	)
+
+
+@boards.get('/<boardname>/post/<pid>/history')
+@auth_required
+@mod_required("users")
+def board_user_history(board, pid):
+
+	page = int(request.args.get("page", 1))
+	limit = min(int(request.args.get("limit", 25)), 200)
+
+	p = get_post(pid)
+	if not p:
+		abort(404)
+
+	user = p.author
+
+	posts = g.db.query(Post).filter_by(board_id=board.id, author_id=user.id)
+
+	has_next = posts.count() > page*limit
+
+	mod = board.get_mod(g.v)
+
+	return render_template(
+		'boards/listing.html',
+		v=g.v,
+		board=board,
+		posts=posts.offset(limit * (page-1)).limit(limit).all(),
+		has_next=has_next,
+		page=page,
+		limit=limit,
+		mod_view=True,
+		mod=mod,
+		reveal_names=True,
+		title="User history",
+		show_thread_link=True,
+		history_for=pid
+	)
+
+
+@boards.post('/<boardname>/post/<pid>/purge_history')
+@auth_required
+@mod_required("users")
+def board_purge_history(board, pid):
+
+	p = get_post(pid)
+	if not p:
+		abort(404)
+
+	user = p.author
+	posts = g.db.query(Post).filter_by(board_id=board.id, author_id=user.id)
+
+	for post in posts:
+		# delete files
+		path = os.path.join(app.static_folder, 'ugc/thread')
+		if post.is_top_level:
+			path = os.path.join(path, str(post.id))
+		else:
+			path = os.path.join(path, str(post.parent_id))
+			path = os.path.join(path, str(post.id))
+
+		if os.path.exists(path):
+			shutil.rmtree(path, ignore_errors=True)
+
+		if post.is_top_level:
+			for p in post.replies:
+
+				for r in p.reports:
+					g.db.delete(r)
+
+				g.db.delete(p)
+
+		for r in post.reports:
+			g.db.delete(r)
+
+		g.db.delete(post)
+
+	return render_template(
+		'message.html',
+		v=g.v,
+		title='user history purged',
+		message='deleted all posts, replies and files from this user'
 	)
 
 
@@ -326,6 +409,30 @@ def board_bans(board):
 	bans = bans.all()
 
 	return render_template('boards/bans.html', v=g.v, board=board, bans=bans)
+
+
+@boards.get('/<boardname>/post/<pid>/ban')
+@auth_required
+@mod_required("users")
+def ban_for(board, pid):
+
+	post = get_post(pid)
+	if not post or post.board.name != board.name:
+		abort(404)
+
+	if board.has_ban(post.author):
+		return render_template(
+			'message.html',
+			v=g.v,
+			title='user already banned',
+			message='Visit mod settings to unban them.'
+		)
+
+	return render_template(
+		'boards/ban.html',
+		post=post,
+		v=g.v
+	)
 
 
 @boards.post('/<boardname>/ban')
@@ -365,11 +472,11 @@ def ban_from_board(board):
 			v=g.v
 		), 404
 
-	if not reason or not message:
+	if not reason:
 		return render_template(
 			'message.html',
 			title='you must provide a reason',
-			message='You must provide a reason for banning the user and a message to the banned user.',
+			message='You must provide a reason for banning the user.',
 			v=g.v
 		), 400
 

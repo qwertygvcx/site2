@@ -180,7 +180,6 @@ def submit(boardname, pid = None):
 				'errors/banned.html',
 				ban=ban,
 				board=board,
-				reason=ban.ban_message,
 				post=post,
 				v=g.v
 			)

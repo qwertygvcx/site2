@@ -10,18 +10,14 @@
 	</div>
 	<hr />
 	{% if posts %}
-		{% if bulk_actions %}
-			<form id="bulk-actions-form" class="form">
-				{% for post in posts %}
-					{% include "components/reply.html" %}
-				{% endfor %}
-				<input type="submit" class="btn-danger" value="bulk delete" />
+		{% if history_for %}
+			<form style="margin-bottom: 20px;" action="{{ url_for('boards.board_purge_history', boardname=board.name, pid=history_for) }}" method="post">
+				<input type="submit" class="btn-danger" value="bulk delete history" />
 			</form>
-		{% else %}
-			{% for post in posts %}
-				{% include "components/reply.html" %}
-			{% endfor %}
 		{% endif %}
+		{% for post in posts %}
+			{% include "components/reply.html" %}
+		{% endfor %}
 		<div class="footer">
 			{% if posts %}
 				<a class="link-btn" href="#">back to top</a>

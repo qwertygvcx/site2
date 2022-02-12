@@ -58,6 +58,10 @@
 				<div class="actions">
 					<a class="action action-report" href="{{ url_for('posts_blueprint.report_post', boardname=board.name, pid=post.id) }}" target="_blank">Report</a>
 					<a class="action action-report-global" href="" target="_blank">Report Globally</a>
+					{% if mod and mod.perm_users %}
+						<a class="action action-ban" href="{{ url_for('boards.ban_for', boardname=board.name, pid=post.id) }}" target="_blank">Ban user from /{{ board.name }}/</a>
+						<a class="action action-history" href="{{ url_for('boards.board_user_history', boardname=board.name, pid=post.id) }}" target="_blank">User history in /{{ board.name }}/</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>
