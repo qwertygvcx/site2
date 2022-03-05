@@ -12,12 +12,16 @@ class ModRelationship(Base):
 	board_id = Column(Integer, ForeignKey('boards.id'))
 	user_id = Column(Integer, ForeignKey('users.id'))
 	created_utc = Column(Integer)
+	mod_level = Column(Integer, default=1)
 
 	""" permissions """
+	perm_full = Column(Boolean, default=True)
 	perm_content = Column(Boolean, default=True) # delete/pin posts, schedule megathreads
 	perm_users = Column(Boolean, default=True) # manage mods, bans, and approved users
 	perm_config = Column(Boolean, default=True) # edit board settings (banner, visiblity etc)
 	perm_styling = Column(Boolean, default=True) # edit board css
+
+	user = relationship("User", primaryjoin="ModRelationship.user_id == User.id", uselist=False)
 
 	def __repr__(self):
 		return f'<ModRelationship(id={self.id})>'
@@ -28,6 +32,41 @@ class ModRelationship(Base):
 			kws["created_utc"] = int(time.time())
 
 		super().__init__(**kws)
+
+	@property
+	def perms_string(self):
+
+		if self.perm_full:
+			return "full permissions"
+
+		perms = []
+		all_perms = [x for x in self.__dict__ if x.startswith('perm_')]
+		for p in all_perms:
+			perm = self.__dict__[p]
+			if perm:
+				perms += [p.lstrip('perm_')]
+
+		if len(perms) == 0:
+			return "no permissions"
+
+		return ",".join(perms)
+
+	@property
+	def created(self):
+		d = math.floor((int(time.time()) - self.created_utc) / (24*60*60))
+		if d == 0:
+			return "today"
+		else:
+			return f"{d} day(s) ago"
+
+	@property
+	def added(self):
+		return datetime.datetime.fromtimestamp(self.created_utc).strftime('%c')
+
+	""" returns a list of all permission strings """
+	@classmethod
+	def permissions(cls) -> list:
+		return [p for p in cls.__dict__ if p.startswith("perm_")]
 
 
 class BanRelationship(Base):

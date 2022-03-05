@@ -1,3 +1,9 @@
+:root {
+  --nav-link-color: white;
+  --color-error: crimson;
+  --green: #117743;
+  --greentext: #789922; }
+
 body {
   background-color: #eef2ff;
   margin: 0;
@@ -19,7 +25,7 @@ nav {
   left: 0;
   padding: 1rem 1.5rem; }
   nav * {
-    color: white; }
+    color: var(--nav-link-color); }
   nav #nav-links a {
     font-weight: 700;
     font-size: 1.05rem;
@@ -69,7 +75,7 @@ nav {
   float: right; }
 
 .error, .red {
-  color: crimson; }
+  color: var(--color-error); }
 
 input[type="text"], input[type="number"] {
   box-sizing: border-box; }
@@ -201,32 +207,28 @@ textarea {
   line-height: 1.4;
   padding: .25em 1em; }
 
-.btn-danger {
+.btn {
   cursor: pointer;
   display: inline-block;
   margin-right: 10px;
   padding: 3px 15px;
-  border: 1px solid #cc0000;
   font-weight: bold;
-  color: #cc0000;
   background-color: transparent; }
+
+.btn-danger {
+  border: 1px solid #cc0000;
+  color: #cc0000; }
 
 .btn-danger:hover {
   background-color: #cc0000;
   color: white; }
 
 .btn-success {
-  cursor: pointer;
-  display: inline-block;
-  margin-right: 10px;
-  padding: 3px 15px;
-  border: 1px solid #117743;
-  font-weight: bold;
-  color: #117743;
-  background-color: transparent; }
+  border: 1px solid var(--green);
+  color: var(--green); }
 
 .btn-success:hover {
-  background-color: #117743;
+  background-color: var(--green);
   color: white; }
 
 .post-report-control {
@@ -235,14 +237,8 @@ textarea {
     display: inline-block; }
 
 .btn-gray {
-  cursor: pointer;
-  display: inline-block;
-  margin-right: 10px;
-  padding: 3px 15px;
   border: 1px solid #34345c;
-  font-weight: bold;
-  color: #34345c;
-  background-color: transparent; }
+  color: #34345c; }
 
 .btn-gray:hover {
   background-color: #34345c;
@@ -277,8 +273,11 @@ hr {
 strong {
   font-weight: 700; }
 
+.green {
+  color: var(--green); }
+
 .anon {
-  color: #117743; }
+  color: var(--green); }
 
 .author {
   color: #1E2DFF; }
@@ -321,7 +320,7 @@ blockquote.ugc {
     margin-left: 0;
     margin-right: 0; }
   blockquote.ugc blockquote {
-    color: #789922;
+    color: var(--greentext);
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 0; }
@@ -487,13 +486,18 @@ blockquote.ugc:first-child {
   border-left: 3px solid gray;
   color: gray; }
 
-.ban-listing {
+.user-listing {
   width: 100%;
   max-width: 900px; }
-  .ban-listing th {
+  .user-listing th {
     text-align: left; }
-  .ban-listing input[type="submit"] {
+  .user-listing input[type="submit"] {
     color: crimson;
     text-decoration: underline; }
+
+.add-mod-form {
+  margin-top: 20px; }
+  .add-mod-form h1, .add-mod-form h2, .add-mod-form h3, .add-mod-form h4, .add-mod-form h5, .add-mod-form h6 {
+    margin: 0; }
 
 /*# sourceMappingURL=light.css.map */

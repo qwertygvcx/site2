@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+{% block title %}mods of /{{ board.name }}/{% endblock %}
+{% block content %}
+	{% include "boards/header.html" %}
+	{% if mod %}
+		<div class="mod-box">
+			<form action="{{ url_for('boards.mod_resign', boardname=board.name) }}" method="post">
+				<span>you're a mod of /{{ board.name }}/.</span>
+				<input type="submit" class="btn btn-danger" value="resign" style="margin-left: 20px;" />
+			</form>
+		</div>
+	{% endif %}
+	{% if error %}
+		<p class="red">{{ error }}</p>
+	{% endif %}
+	<div class="board-links">
+		<a class="btn link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
+		{% if mod %}
+			<a class="btn link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Back to mod tools</a>
+		{% endif %}
+	</div>
+	<hr />
+	<table class="user-listing">
+		<thead>
+			<th>user</th>
+			<th>added</th>
+			<th>permissions</th>
+			<th></th>
+		</thead>
+		<tbody>
+			{% for m in mods %}
+				<tr>
+					<td>{{ m.user.name }}</td>
+					<td title="{{ m.added }}">{{ m.created }}</td>
+					<td>{{ m.perms_string }}</td>
+					{% if mod and mod.perm_full and (m.mod_level>mod.mod_level) %}
+						<td>
+							<form class="inline-form" action="{{ url_for('boards.remove_mod', boardname=board.name, mod_id=m.id) }}" method="post">
+								<input type="submit" value="remove mod" />
+							</form>
+						</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% if mod and mod.perm_full %}
+		<div class="add-mod-form">
+			<h4>add mod</h4>
+			<form action="{{ url_for('boards.add_mod', boardname=board.name) }}" method="post">
+				<div>
+					<input type="text" name="user" placeholder="username" maxlength="20" required />
+					<input type="submit" class="btn link-btn" value="add mod" />
+				</div>
+				<div>
+					<h5>permissions:</h5>
+					{% for p in perms %}
+						<div>
+							<input type="checkbox" name="{{ p }}" checked />
+							<label for="{{ p }}">{{ p | lstrip("perm_") }}</label>
+						</div>
+					{% endfor %}
+				</div>
+				<p class="hint">note: mods with full permissions will have access to all mod tools, regardless of other permissions</p>
+			</form>
+		</div>
+	{% endif %}
+{% endblock %}

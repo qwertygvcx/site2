@@ -49,3 +49,11 @@ class User(Base):
 
 	def check_password(self, string):
 		return check_password(string, self.passhash)
+
+	@property
+	def is_banned(self):
+		if self._banned:
+			if not self.unban_utc:
+				return True
+			return int(time.time()) < self.unban_utc
+		return False

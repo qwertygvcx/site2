@@ -4,7 +4,8 @@ from flask import (
 	render_template,
 	g,
 	redirect,
-	abort
+	abort,
+	url_for
 )
 from app.helpers.wrappers import *
 from app.classes.board import *
@@ -385,6 +386,135 @@ def board_purge_history(board, pid):
 		title='user history purged',
 		message='deleted all posts, replies and files from this user'
 	)
+
+
+@boards.get('/<boardname>/mod/mods')
+@auth_desired
+def board_mods(boardname, error=None):
+
+	board = get_board(boardname)
+	if not board:
+		abort(404)
+
+	mods = g.db.query(ModRelationship).filter_by(board_id=board.id).options(joinedload(ModRelationship.user))
+	mods = mods.order_by(ModRelationship.mod_level.asc())
+
+	if g.v:
+		mod = board.get_mod(g.v)
+	else:
+		mod = None
+
+	code = 400 if error else 200
+
+	return render_template(
+		'boards/mods.html',
+		v=g.v,
+		board=board,
+		mods=mods,
+		mod=mod,
+		perms=ModRelationship.permissions(),
+		error=error
+	), code
+
+
+@boards.post('/<boardname>/mod/add')
+@auth_required
+@mod_required("full")
+def add_mod(board):
+
+	try:
+		u = get_user(request.form.get("user", ""))
+		if not u:
+			raise BoardError("user doesn't exist")
+
+		if u._banned and not u.unban_utc:
+			raise BoardError(f"{u.name} is permanently banned")
+
+		if board.has_mod(u):
+			raise BoardError(f"{u.name} is already a mod of /{board.name}/")
+
+		if board.has_ban(u):
+			raise BoardError(f"{u.name} is banned from /{board.name}/")
+	except BoardError as e:
+		return board_mods(board.name, error=str(e))
+
+	_permissions = ModRelationship.permissions()
+	new_perms = {}
+	for p in _permissions:
+		new_perms[p] = p in request.form
+
+	last_mod_level = g.db.query(ModRelationship)\
+		.filter_by(board_id=board.id)\
+		.order_by(ModRelationship.mod_level.desc())\
+		.first()\
+		.mod_level
+
+	new_mod = ModRelationship(
+		board_id=board.id,
+		user_id=u.id,
+		mod_level=last_mod_level+1,
+		**new_perms
+	)
+
+	g.db.add(new_mod)
+	g.db.commit()
+
+	return redirect(url_for('boards.board_mods', boardname=board.name))
+
+
+@boards.post('/<boardname>/mod/remove/<mod_id>')
+@auth_required
+@mod_required("full")
+def remove_mod(board, mod_id):
+
+	v_mod = board.get_mod(g.v)
+
+	try:
+		mod = g.db.query(ModRelationship).filter_by(id=mod_id).first()
+		if not mod:
+			raise BoardError(f"that user is not a mod of /{board.name}/")
+
+		can_remove = mod.mod_level > v_mod.mod_level or mod.user_id == g.v.id
+		if not can_remove:
+			raise BoardError("you cannot remove that mod")
+
+	except BoardError as e:
+		return board_mods(board.name, error=str(e))
+
+	lower_mods = g.db.query(ModRelationship).filter(
+		ModRelationship.board_id == board.id,
+		ModRelationship.mod_level<mod.mod_level).all()
+
+	for m in lower_mods:
+		m.mod_level -= 1
+		g.db.add(m)
+
+	g.db.delete(mod)
+
+	return redirect(url_for('boards.board_mods', boardname=board.name))
+
+
+@boards.post('/<boardname>/mod/resign')
+@auth_required
+@mod_required()
+def mod_resign(board):
+
+	v_mod = board.get_mod(g.v)
+
+	if not v_mod:
+		return board_mods(board.name, error="you're not a mod")
+
+	lower_mods = g.db.query(ModRelationship).filter(
+		ModRelationship.board_id == board.id,
+		ModRelationship.mod_level<v_mod.mod_level).all()
+
+	for m in lower_mods:
+		m.mod_level -= 1
+		g.db.add(m)
+
+	g.db.delete(v_mod)
+
+	return redirect(url_for('boards.board_mods', boardname=board.name))
 
 
 @boards.get('/<boardname>/mod/bans')

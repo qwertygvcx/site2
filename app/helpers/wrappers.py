@@ -58,7 +58,7 @@ def auth_required(f):
 	return wrapper
 
 
-def mod_required(permission):
+def mod_required(permission=None):
 	def wrapper_maker(f):
 		def wrapper(*args, **kwargs):
 
@@ -68,7 +68,10 @@ def mod_required(permission):
 			if not board:
 				abort(404)
 
-			if not board.has_mod(g.v, permission):
+			has_mod = board.has_mod(g.v, permission)
+			print(type(permission))
+			if not has_mod:
+				print("no mod")
 				abort(403)
 
 			# permabanned accounts can't moderate

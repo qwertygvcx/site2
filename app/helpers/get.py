@@ -3,6 +3,8 @@ from app.classes import *
 
 def get_user(name):
 
+	name = name.replace('%', '\%')
+	name = name.replace('_', '\_')
 	return g.db.query(User).filter(User.name.ilike(name)).first()
 
 

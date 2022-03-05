@@ -75,7 +75,13 @@ class Board(Base):
         mod = g.db.query(ModRelationship).filter_by(board_id=self.id, user_id=user.id)
 
         if permission:
-            mod = mod.filter(ModRelationship.__dict__[f'perm_{permission}'] == True)
+            print("filter perms")
+            mod = mod.filter(or_(
+                ModRelationship.__dict__[f'perm_{permission}'] == True,
+                ModRelationship.perm_full == True))
+
+        print(f'mod query: {mod}')
+        print(f'query result: {mod.first()}')
 
         return mod.first()
 

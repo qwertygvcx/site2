@@ -18,18 +18,18 @@
 		{% if mod_view %}
 			<div class="mod-reply">
 				<form action="{{ url_for('posts_blueprint.mod_delete_post', boardname=board.name, pid=post.id) }}" method="post">
-					<input type="submit" class="btn-danger" value="delete" />
+					<input type="submit" class="btn btn-danger" value="delete" />
 				</form>
 				{% if post.reports %}
 					<form action="{{ url_for('posts_blueprint.mod_close_reports', boardname=board.name, pid=post.id) }}" method="post">
-						<input type="submit" class="btn-gray" value="close reports" />
+						<input type="submit" class="btn btn-gray" value="close reports" />
 					</form>
 					<form action="{{ url_for('posts_blueprint.mod_approve', boardname=board.name, pid=post.id) }}" method="post">
-						<input type="submit" class="btn-success" value="approve" />
+						<input type="submit" class="btn btn-success" value="approve" />
 					</form>
 				{% elif post.approved %}
 					<form action="{{ url_for('posts_blueprint.mod_unapprove', boardname=board.name, pid=post.id) }}" method="post">
-						<input type="submit" class="btn-danger" value="unapprove" />
+						<input type="submit" class="btn btn-danger" value="unapprove" />
 					</form>
 				{% endif %}
 			</div>

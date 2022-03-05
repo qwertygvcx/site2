@@ -27,10 +27,10 @@
 		{% endif %}
 	{% endif %}
 	<div class="board-links">
-		<a class="link-btn" href="{% if board %}{{ url_for('boards.get_board_page', name=board.name) }}{% else %}{{ url_for('boards.overboard') }}{% endif %}">Index</a>
+		<a class="btn link-btn" href="{% if board %}{{ url_for('boards.get_board_page', name=board.name) }}{% else %}{{ url_for('boards.overboard') }}{% endif %}">Index</a>
 		<form class="cat-search">
-			<input class="form-input" type="text" name="filter" placeholder="enter search text" {% if query %}value="{{ query }}"{% endif %} />
-			<input type="submit" value="search" class="link-btn" />
+			<input class="form-input" type="search" name="filter" placeholder="enter search text" {% if query %}value="{{ query }}"{% endif %} />
+			<input type="submit" value="search" class="btn link-btn" />
 		</form>
 	</div>
 	<div class="catalog-container">
@@ -56,12 +56,12 @@
 	</div>
 	<div class="footer">
 		{% if posts %}
-			<a class="link-btn" href="#">back to top</a>
+			<a class="btn link-btn" href="#">back to top</a>
 			{% if page > 1 %}
-				<a class="link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
+				<a class="btn link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
 			{% endif %}
 			{% if has_next %}
-				<a class="link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
+				<a class="btn link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
 			{% endif %}
 		{% endif %}
 	</div>

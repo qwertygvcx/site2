@@ -2,30 +2,33 @@
 {% block title %}{{ title }} - /{{ board.name }}/{% endblock %}
 {% block content %}
 	{% include "boards/header.html" %}
+	{% if history_for %}
+	<div class="mod-box">
+		<form action="{{ url_for('boards.board_purge_history', boardname=board.name, pid=history_for) }}" method="post">
+			<input type="text" class="form-input" name="reason" placeholder="reason" />
+			<input type="submit" class="btn btn-danger" value="bulk delete history" />
+		</form>
+	</div>
+	{% endif %}
 	<div class="board-links">
-		<a class="link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
+		<a class="btn link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
 		{% if mod %}
-			<a class="link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Back to mod tools</a>
+			<a class="btn link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Back to mod tools</a>
 		{% endif %}
 	</div>
 	<hr />
 	{% if posts %}
-		{% if history_for %}
-			<form style="margin-bottom: 20px;" action="{{ url_for('boards.board_purge_history', boardname=board.name, pid=history_for) }}" method="post">
-				<input type="submit" class="btn-danger" value="bulk delete history" />
-			</form>
-		{% endif %}
 		{% for post in posts %}
 			{% include "components/reply.html" %}
 		{% endfor %}
 		<div class="footer">
 			{% if posts %}
-				<a class="link-btn" href="#">back to top</a>
+				<a class="btn link-btn" href="#">back to top</a>
 				{% if page > 1 %}
-					<a class="link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
+					<a class="btn link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
 				{% endif %}
 				{% if has_next %}
-					<a class="link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
+					<a class="btn link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
 				{% endif %}
 			{% endif %}
 		</div>

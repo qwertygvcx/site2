@@ -27,9 +27,9 @@
 		{% endif %}
 	{% endif %}
 	<div class="board-links">
-		<a class="link-btn" href="{% if board %}{{ url_for('boards.get_board_catalog', name=board.name) }}{% else %}{{ url_for('boards.overboard_catalog') }}{% endif %}">Catalog</a>
+		<a class="btn link-btn" href="{% if board %}{{ url_for('boards.get_board_catalog', name=board.name) }}{% else %}{{ url_for('boards.overboard_catalog') }}{% endif %}">Catalog</a>
 		{% if mod %}
-			<a class="link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Settings</a>
+			<a class="btn link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Settings</a>
 		{% endif %}
 	</div>
 	<div class="threads">
@@ -37,12 +37,12 @@
 		{% if posts %}
 			<div class="clear">
 				<hr />
-				<a class="link-btn" href="#">back to top</a>
+				<a class="btn link-btn" href="#">back to top</a>
 				{% if page > 1 %}
-					<a class="link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
+					<a class="btn link-btn" href="?page={{ page-1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">< previous page</a>
 				{% endif %}
 				{% if has_next %}
-					<a class="link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
+					<a class="btn link-btn" href="?page={{ page+1 }}&limit={{ limit }}{% if query %}&filter={{ query }}{% endif %}">next page ></a>
 				{% endif %}
 			</div>
 		{% else %}

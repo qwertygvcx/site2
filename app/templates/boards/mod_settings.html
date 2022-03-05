@@ -3,7 +3,7 @@
 {% block content %}
 	{% include "boards/header.html" %}
 	<div class="board-links">
-		<a class="link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
+		<a class="btn link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
 	</div>
 	{% if mod.perm_content %}
 		<h2>Content</h2>
@@ -16,12 +16,15 @@
 			</li>
 		</ul>
 	{% endif %}
-	{% if mod.perm_users %}
-		<h2>Users</h2>
-		<ul>
-			<li>
-				<a href="{{ url_for('boards.board_bans', boardname=board.name) }}">Banned users</a>
-			</li>
-		</ul>
-	{% endif %}
+	<h2>Users</h2>
+	<ul>
+		{% if mod.perm_users %}
+		<li>
+			<a href="{{ url_for('boards.board_bans', boardname=board.name) }}">Banned users</a>
+		</li>
+		{% endif %}
+		<li>
+			<a href="{{ url_for('boards.board_mods', boardname=board.name) }}">Mods</a>
+		</li>
+	</ul>
 {% endblock %}

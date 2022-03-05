@@ -3,8 +3,8 @@
 {% block content %}
 	{% include "boards/header.html" %}
 	<div class="board-links">
-		<a class="link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
-		<a class="link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Back to mod tools</a>
+		<a class="btn link-btn" href="{{ url_for('boards.get_board_page', name=board.name) }}">Index</a>
+		<a class="btn link-btn" href="{{ url_for('boards.board_mod', name=board.name) }}">Back to mod tools</a>
 	</div>
 	<form class="form" action="{{ url_for('boards.ban_from_board', boardname=board.name) }}" method="post">
 		<div class="form-entry">
@@ -24,12 +24,12 @@
 			<input type="number" name="expiry" class="form-input" placeholder="days until the ban expires" />
 		</div>
 		<div class="form-entry">
-			<input type="submit" class="btn-danger" value="ban user" />
+			<input type="submit" class="btn btn-danger" value="ban user" />
 		</div>
 	</form>
 	{% if bans %}
 		<h3>bans in /{{ board.name }}/</h3>
-		<table class="ban-listing">
+		<table class="user-listing">
 			<thead>
 				<tr>
 					<th>user</th>
@@ -46,7 +46,7 @@
 						<td>{{ ban.user.name }}</td>
 						<td>{{ ban.banning_mod.name }}</td>
 						<td><a target="_blank" class="post-mention" href="/*/post/{{ ban.banned_for }}">>>{{ ban.banned_for }}</a></td>
-						<td>
+						<td {% if ban.expires_utc > 0 %}title="{{ ban.expires }}"{% endif %}>
 							{% if ban.expires_utc > 0 %}
 								{% if ban.duration_days > 1 %}
 									in {{ ban.duration_days }} days

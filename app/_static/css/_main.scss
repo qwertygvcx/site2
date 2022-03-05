@@ -1,3 +1,10 @@
+:root {
+    --nav-link-color: white;
+    --color-error: crimson;
+    --green: #117743;
+    --greentext: #789922;
+}
+
 body {
     background-color: $color-primary;
     margin: 0;
@@ -23,7 +30,7 @@ nav {
     padding: 1rem 1.5rem;
 
     * {
-        color: white;
+        color: var(--nav-link-color);
     }
 
     #nav-links a {
@@ -91,7 +98,7 @@ nav {
 }
 
 .error, .red {
-    color: crimson;
+    color: var(--color-error);
 }
 
 input[type="text"], input[type="number"] {
@@ -262,15 +269,18 @@ textarea {
     padding: .25em 1em;
 }
 
-.btn-danger {
+.btn {
     cursor: pointer;
     display: inline-block;
     margin-right: 10px;
     padding: 3px 15px;
-    border: 1px solid #cc0000;
     font-weight: bold;
-    color: #cc0000;
     background-color: transparent;
+}
+
+.btn-danger {
+    border: 1px solid #cc0000;
+    color: #cc0000;
 }
 
 .btn-danger:hover {
@@ -279,18 +289,12 @@ textarea {
 }
 
 .btn-success {
-    cursor: pointer;
-    display: inline-block;
-    margin-right: 10px;
-    padding: 3px 15px;
-    border: 1px solid #117743;
-    font-weight: bold;
-    color: #117743;
-    background-color: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
 }
 
 .btn-success:hover {
-    background-color: #117743;
+    background-color: var(--green);
     color: white;
 }
 
@@ -302,14 +306,8 @@ textarea {
 }
 
 .btn-gray {
-    cursor: pointer;
-    display: inline-block;
-    margin-right: 10px;
-    padding: 3px 15px;
     border: 1px solid #34345c;
-    font-weight: bold;
     color: #34345c;
-    background-color: transparent;
 }
 
 .btn-gray:hover {
@@ -353,8 +351,12 @@ strong {
     font-weight: 700;
 }
 
+.green {
+    color: var(--green);
+}
+
 .anon {
-    color: #117743;
+    color: var(--green);
 }
 
 .author {
@@ -407,7 +409,7 @@ blockquote.ugc {
         margin-right: 0;
     }
     blockquote {
-        color: #789922;
+        color: var(--greentext);
         margin-bottom: 0;
         margin-left: 0;
         margin-right: 0;
@@ -611,7 +613,7 @@ blockquote.ugc:first-child {
     color: gray;
 }
 
-.ban-listing {
+.user-listing {
     width: 100%;
     max-width: 900px;
     th {
@@ -620,5 +622,12 @@ blockquote.ugc:first-child {
     input[type="submit"] {
         color: crimson;
         text-decoration: underline;
+    }
+}
+
+.add-mod-form {
+    margin-top: 20px;
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0;
     }
 }

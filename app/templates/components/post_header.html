@@ -6,7 +6,7 @@
 	{% endif %}
 	{% if post.pinned %}
 		<span class="post-detail post-pinned">
-			<strong class="anon">[pinned]</strong>
+			<strong class="green">[pinned]</strong>
 		</span>
 	{% endif %}
 	<span class="post-detail post-title">
@@ -25,7 +25,7 @@
 				{% endif %}
 			</strong>
 			{% if post.anon and reveal_names %}
-				<span class="anon" title="anonymous post, but you can see the username because you mod this board">
+				<span class="green" title="anonymous post, but you can see the username because you mod this board">
 					[hidden]
 				</span>
 			{% endif %}
@@ -38,7 +38,7 @@
 		<a href="#{{ post.id }}">No.</a><a href="#{{ post.id }}">{{ post.id }}</a>
 	</span>
 	{% if mod and post.approved %}
-		<span class="anon" title="this post no longer accepts reports">
+		<span class="green" title="this post no longer accepts reports">
 			approved
 		</span>
 	{% endif %}
